@@ -4,6 +4,7 @@ import com.whoiszxl.entity.Result;
 import com.whoiszxl.service.DogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ public class CoreController {
     @Autowired
     private DogService dogService;
 
+    @CrossOrigin
     @PostMapping("/converter")
     public Result converter(@RequestBody HashMap<String, String> params) {
         String oldArticle = params.get("text");

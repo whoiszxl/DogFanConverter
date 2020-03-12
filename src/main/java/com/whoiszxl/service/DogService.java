@@ -4,12 +4,11 @@ import com.csvreader.CsvReader;
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.whoiszxl.App;
 import com.whoiszxl.entity.Result;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class DogService {
                 emojiData.put(csvReader.get(0), csvReader.get(1));
             }
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
         }
 
         message.append("原文字数：").append(oldArticle.length()).append("字");
@@ -59,7 +58,7 @@ public class DogService {
 
         long endTime = System.currentTimeMillis();
 
-        message.append("转换耗时：").append((endTime - startTime)/1000).append("秒");
+        message.append("转换耗时：").append(endTime - startTime).append("毫秒");
 
         return Result.buildSuccess(newArticle.toString(), message.toString());
     }
@@ -80,8 +79,11 @@ public class DogService {
 
 
 
-    public CsvReader getCsv() throws FileNotFoundException {
-        return new CsvReader( App.class.getResource("/mapping.csv").getPath(), ',', Charset.forName("UTF-8"));
+    public CsvReader getCsv() throws IOException {
+
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource resource = resolver.getResource( "classpath:mapping.csv" );
+        return new CsvReader( resource.getInputStream(), ',', Charset.forName("UTF-8"));
     }
 
 }
