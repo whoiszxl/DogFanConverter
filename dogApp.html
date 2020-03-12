@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DogFanConverter</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <!-- 引入组件库 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+</head>
+<body>
+
+    <div id="app">
+        <v-app id="inspire">
+            <v-app-bar app color="indigo" dark>
+                <v-toolbar-title>DogFanConverter</v-toolbar-title>
+            </v-app-bar>
+            <v-content>
+                <v-container fluid fill-height>
+                    <v-layout>
+                        <v-flex text-xs-top>
+                            <div id="example-1">
+                                <v-container fluid><v-textarea v-model="message" name="old-article" filled label="请输入需要转换的文字" auto-grow value=""/></v-container>
+                                <div class="my-2">
+                                    <v-btn large color="primary" v-on:click="transfer()" dark>开始转换</v-btn>
+                                </div>
+                                <p class="font-weight-black">转换结果：</p>
+                                <p class="font-weight-black">{{alertMessage}}</p>
+                                <br>{{ newArticle }}
+                            </div>
+                        </v-flex>
+                    </v-layout>
+                </v-container>
+            </v-content>
+            <v-footer color="indigo" app>
+                <span class="white--text">&copy; 2077</span>
+            </v-footer>
+        </v-app>
+    </div>
+
+    <script type="text/javascript">
+        newArticle = "";
+        alertMessage = "";
+        var vm = new Vue({
+            el: "#app",
+            vuetify: new Vuetify(),
+            data: {
+                counter: 0,
+                name: "vue",
+                newArticle: newArticle,
+                message: "",
+                alertMessage:""
+            },
+            methods: {
+                transfer: function () {
+                    axios.post('http://106.13.218.136:10086/converter', {
+                            text: this.message
+                        })
+                        .then(function (response) {
+                            vm.$data.newArticle = response.data.result;
+                            vm.$data.alertMessage = response.data.message;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    this.$forceUpdate();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
